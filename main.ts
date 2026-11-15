@@ -55,17 +55,21 @@ const PROBE_TIMEOUT_MS = 5000;
 const MAX_BODY_BYTES = 32 * 1024 * 1024;
 const UPSTREAM_TIMEOUT_MS = 10000;
 
-/** Conservative successful-call cap per provider, from the generator's
- *  per-trial budget range (min budget minus a reserve for scheduled fails). */
+/** Successful-call cap per provider, from the generator's per-trial budget
+ *  range (min budget minus a reserve for scheduled fails). The reserve is 1
+ *  for cloudflare and zai: the offline simulation over the three practice
+ *  trials shows a reserve of 2 there is overcautious — with 6 and 3, late
+ *  requests are served at 1470 instead of falling back to 1465/1440 models,
+ *  for one extra upstream call across the three trials. */
 const SUCCESS_CAP: Record<string, number> = {
   groq: 7,
   cerebras: 3,
   gemini: 4,
-  zai: 2,
+  zai: 3,
   openrouter: 8,
   sambanova: 2,
   pollinations: 8,
-  cloudflare: 5,
+  cloudflare: 6,
   ovh: 3,
   kilol: 10,
 };
